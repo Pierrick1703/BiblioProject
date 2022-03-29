@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>BiblioProject</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+            <!-- Version Java DotEnv -->
+            <java_dotenv.version>5.2.2</java_dotenv.version>
+
+            <!-- Versions JUnit - JDK Extension -->
+            <junit.version>5.8.1</junit.version>
+
+            <!-- Versions JavaFx - JDK Extension -->
+            <javafx.version>17.0.2</javafx.version>
+
+            <!-- Versions Mysql Connnector - Jar -->
+            <mysql_connnector.version>8.0.28</mysql_connnector.version>
+
+            <!-- Versions JAXB - API XML & XSD -->
+            <jaxb_core.version>3.0.2</jaxb_core.version>
+            <jaxb_api.version>2.3.1</jaxb_api.version>
+        </properties>
+
+        <dependencies>
+            <!-- Java DotEnv -->
+            <!-- https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv -->
+            <dependency>
+                <groupId>io.github.cdimascio</groupId>
+                <artifactId>java-dotenv</artifactId>
+                <version>${java_dotenv.version}</version>
+            </dependency>
+
+            <!-- JavaFX OpenJFX -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx</artifactId>
+                <version>${javafx.version}</version>
+                <type>pom</type>
+            </dependency>
+            <!-- JavaFX Base -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-base</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <!-- JavaFX FXML -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <!-- JavaFX Graphics -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-graphics -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <!-- JavaFX Swing -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-swing</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+
+            <!-- JavaFX Controls -->
+            <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-controls</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+
+            <!-- JUnit Jupiter Engine -->
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- MySQL Connector/J -->
+            <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql_connnector.version}</version>
+            </dependency>
+
+            <!-- JAXB -->
+            <!-- JAXB API -->
+            <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb_api.version}</version>
+            </dependency>
+            <!-- JAXB Core -->
+            <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${jaxb_core.version}</version>
+            </dependency>
+            <!-- JAXB Runtime -->
+            <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb_core.version}</version>
+            </dependency>
+            <!-- JAXB XJC -->
+            <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-xjc -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb_core.version}</version>
+            </dependency>
+        </dependencies>
+        <build>
+            <sourceDirectory>src</sourceDirectory>
+            <resources>
+                <resource>
+                    <directory>src</directory>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
+                </resource>
+            </resources>
+            <plugins>
+                <!-- Classe de démarrage JFX -->
+                <!--<plugin>
+                  <groupId>org.openjfx</groupId>
+                  <artifactId>javafx-maven-plugin</artifactId>
+                  <version>0.0.1</version>
+                  <configuration>
+                    <mainClass>esiee_it.agilebibliorouge.gui.MainWindows</mainClass>
+                  </configuration>
+                </plugin> -->
+
+                <!-- Compilation du projet en fichier exécutable .jar -->
+                <!--<plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-jar-plugin</artifactId>
+                  <configuration>
+                    <archive>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>esiee_it.agilebibliorouge.App</mainClass>
+                      </manifest>
+                    </archive>
+                  </configuration>
+                </plugin>-->
+            </plugins>
+        </build>
+    </project>
