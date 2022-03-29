@@ -25,7 +25,16 @@ public class Authentification {
         if(username.contains("pcot") || username.contains("jkla")  || username.contains("cgob")){//accès simple
             JFrame jFrame = new JFrame();
             if(password.contains("1234")){
-                /*start();*/
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/apply.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 JOptionPane.showMessageDialog(jFrame, "Mot de passe incorrect");
             }
@@ -42,14 +51,4 @@ public class Authentification {
         System.exit(0);
     }
 
-    /*
-    public void start() throws IOException {
-        //Object test = getClass().getResource("/main/resources/Authentification.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage ;
-        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
-        stage.setScene(scene);
-        stage.show();
-    }*/
 }

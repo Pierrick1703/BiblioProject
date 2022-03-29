@@ -14,7 +14,6 @@ public class MainApp extends Application {
     @Override
 
     public void start(Stage stage) throws IOException {
-        //Object test = getClass().getResource("/main/resources/Authentification.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
