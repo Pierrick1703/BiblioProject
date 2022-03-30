@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
@@ -29,8 +31,21 @@ public class Admin implements Initializable {
     @FXML private TextField ParutionField;
     @FXML private TextField ColonneField;
     @FXML private TextField RangeeField;
-    //   @FXML private TableView TableView;
+    @FXML private Button btnSuppr;
+    @FXML private MenuItem MenuAboutInfos;
+    @FXML private MenuItem MenuEditionSauvegarder;
+    @FXML private MenuItem MenuEditionSauvegarderSous;
+    @FXML private MenuItem MenuFichierOuvrir;
+    @FXML private javafx.scene.control.MenuItem closeButton;
     @FXML private Button btnEdit;
+    ////////////// tableau ///////////////////
+    @FXML  private TableView<Livre> TableView;
+    @FXML  private TableColumn<Livre, String> titre;
+    @FXML  private TableColumn<Livre, String> auteur;
+    @FXML  private TableColumn<Livre, String> presentation;
+    @FXML  private TableColumn<Livre, String> parution;
+    @FXML  private TableColumn<Livre, Integer> colonne;
+    @FXML  private TableColumn<Livre, Integer> rangee;
     // Bouton Valider
     @FXML private Button btnValider;
     private boolean okClicked = false;
@@ -79,15 +94,6 @@ public class Admin implements Initializable {
         return false;
     }
 
-
-    @FXML private Button btnSuppr;
-    @FXML private MenuItem MenuAboutInfos;
-    @FXML private MenuItem MenuEditionSauvegarder;
-    @FXML private MenuItem MenuEditionSauvegarderSous;
-    @FXML private MenuItem MenuFichierOuvrir;
-    @FXML private javafx.scene.control.MenuItem closeButton;
-
-
     @FXML
     void aboutinfos(ActionEvent event) throws IOException {
     }
@@ -109,25 +115,75 @@ public class Admin implements Initializable {
     @FXML
     void fichierouvrir(ActionEvent event) {
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
-                "xml files (*.xml)", "xml");
-
+        FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter("xml files (*.xml)", "xml");
         chooser.setDialogTitle("Open schedule file");
-        // set selected filter
         chooser.setFileFilter(xmlfilter);
         int value = chooser.showOpenDialog(null);
-
         if(value == JFileChooser.APPROVE_OPTION) {
             File target = chooser.getSelectedFile();
             try {
                 JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
                 Unmarshaller mapperXMLObjet = context.createUnmarshaller();
-                Bibliotheque bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(target);
-                JFrame jFrame = new JFrame();
-                JOptionPane.showMessageDialog(jFrame, "test");
+                bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(target);
+                ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
+                TableView.setItems(list);
             } catch (JAXBException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    // Bouton Suppression
+    @FXML
+    void handleDeleteLivre(ActionEvent event) {
+        int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
+        Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
+        if (selectedIndex >= 0) {
+            //déclarer en erreur sur jetBrain mais fonctionne
+            TableView.getItems().remove(selectedIndex);
+            bibliotheque.supprLivre(selectedLivre);
+            databaseConnection connectNow = new databaseConnection();
+            Connection connectDB = connectNow.getConnection();
+
+            String insertFields ="DELETE FROM Livre WHERE ";
+            String insertValues = "colonne = " + selectedLivre.colonne +" AND rangee = "+ selectedLivre.rangee;
+            String insertToRegister = insertFields + insertValues;
+
+            try{
+                Statement statement =connectDB.createStatement();
+                statement.executeLargeUpdate(insertToRegister);
+
+            }catch (Exception e){
+                e.printStackTrace();
+                e.getCause();
+            }
+        } else {
+            // Nothing selected
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Aucune sélection");
+            alert.setHeaderText("Aucun livre sélectionné");
+            alert.setContentText("Merci de choisir un livre dans le tableau.");
+
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    void handleModifLivre(ActionEvent event) {
+        //déclarer en erreur sur jetBrain mais fonctionne
+        Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
+        int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
+        if (selectedLivre != null) {
+            bibliotheque.supprLivre(selectedLivre);
+            TableView.getItems().remove(selectedIndex);
+            TitreField.setText(selectedLivre.titre);
+            AuteurField.setText(selectedLivre.auteur);
+            PresentationField.setText(selectedLivre.presentation);
+            ParutionField.setText(String.valueOf(selectedLivre.parution));
+            int colonne = selectedLivre.colonne;
+            ColonneField.setText(String.valueOf(colonne));
+            int rangee = selectedLivre.rangee;
+            RangeeField.setText(String.valueOf(rangee));
         }
     }
 
@@ -136,16 +192,12 @@ public class Admin implements Initializable {
         {
             //Create JAXB Context
             JAXBContext jaxbContext = JAXBContext.newInstance(Bibliotheque.class);
-
             //Create Marshaller
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
             //Required formatting??
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
             //Store XML to File
             File file = new File("Bibliotheque.xml");
-
             //Writes XML file to file-system
             jaxbMarshaller.marshal(bibliotheque, file);
         }
@@ -154,27 +206,8 @@ public class Admin implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
-    ////////////// tableau ///////////////////
-    @FXML  private TableView<Livre> TableView;
-    @FXML  private TableColumn<Livre, String> titre;
-    @FXML  private TableColumn<Livre, String> auteur;
-    @FXML  private TableColumn<Livre, String> presentation;
-    @FXML  private TableColumn<Livre, String> parution;
-    @FXML  private TableColumn<Livre, Integer> colonne;
-    @FXML  private TableColumn<Livre, Integer> rangee;
-
-    //déclarer en erreur sur jetBrain mais fonctionne
-    /*ObservableList<Livre> list = FXCollections.observableArrayList(
-            new Livre("Le Seigneur des anneaux", "Tolkien", "zeg", 2000, 1, 1),
-            new Livre("Le Silence des agneaux", "Hannibal", "reth", 1980, 1, 2),
-            new Livre("Retour vers le futur", "Marty", "poj", 2000, 1, 3)
-    );*/
-    ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
-
     public void initialize (URL url, ResourceBundle rb){
+            startTableViewBDD();
         // Initialiser les colonnes
         titre.setCellValueFactory(new PropertyValueFactory<Livre,String>("titre"));
         auteur.setCellValueFactory(new PropertyValueFactory<Livre,String>("auteur"));
@@ -183,10 +216,8 @@ public class Admin implements Initializable {
         colonne.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("colonne"));
         rangee.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("rangee"));
 
+        ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);
-
-        // Clear person details.
-        //showLivreDetails(null);
 
         // Listener
         TableView.getSelectionModel().selectedItemProperty().addListener(
@@ -219,6 +250,39 @@ public class Admin implements Initializable {
 
     }
 
+    private void startTableViewBDD(){
+        databaseConnection connectNow = new databaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String selectFields ="SELECT titre, auteur, presentation, parution, colonne, rangee FROM livre ";
+        String selectToRegister = selectFields;
+        try{
+            PreparedStatement statement =connectDB.prepareStatement(selectToRegister);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            while(result.next()){
+                String titre = result.getString("titre");
+                String auteur = result.getString("auteur");
+                String presentation = result.getString("presentation");
+                int parution = result.getInt("parution");
+                int colonne = result.getInt("colonne");
+                int rangee = result.getInt("rangee");
+                Livre livre =  new Livre(titre,auteur,presentation,parution, colonne, rangee);
+                bibliotheque.addLivre(livre);
+            }
+
+        }catch (Exception e){
+            try {
+                File file = new File("Bibliotheque.xml");
+                JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
+                Unmarshaller mapperXMLObjet = context.createUnmarshaller();
+                bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(file);
+            } catch(JAXBException d){
+                d.printStackTrace();
+            }
+        }
+    }
+
 
     private void showLivreDetails(Livre livre){
         if (livre != null) {
@@ -240,62 +304,5 @@ public class Admin implements Initializable {
             rangee.setText("");
         }
     }
-
-    // Bouton Suppression
-    @FXML
-    void handleDeleteLivre(ActionEvent event) {
-        int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
-        Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
-        if (selectedIndex >= 0) {
-            //déclarer en erreur sur jetBrain mais fonctionne
-            TableView.getItems().remove(selectedIndex);
-            bibliotheque.supprLivre(selectedLivre);
-        } else {
-            // Nothing selected
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Aucune sélection");
-            alert.setHeaderText("Aucun livre sélectionné");
-            alert.setContentText("Merci de choisir un livre dans le tableau.");
-
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    void handleModifLivre(ActionEvent event) {
-        //déclarer en erreur sur jetBrain mais fonctionne
-        Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
-        int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
-        if (selectedLivre != null) {
-            bibliotheque.supprLivre(selectedLivre);
-            TableView.getItems().remove(selectedIndex);
-            TitreField.setText(selectedLivre.titre);
-            AuteurField.setText(selectedLivre.auteur);
-            PresentationField.setText(selectedLivre.presentation);
-            ParutionField.setText(String.valueOf(selectedLivre.parution));
-            int colonne = selectedLivre.colonne;
-            ColonneField.setText(String.valueOf(colonne));
-            int rangee = selectedLivre.rangee;
-            RangeeField.setText(String.valueOf(rangee));
-        }
-    }
-/*
-    public void test(){
-        databaseConnection connectNow = new databaseConnection();
-        Connection connectDB = connectNow.getConnection();
-
-        String insertFields ="INSERT INTO livre_aicha (Titre, Auteur, Presentation, Parution, Colones, Rangees) VALUES ('";
-        String insertValues = Titre +"','"+ Auteur +"','"+ Presentation + "','" + Parution + "','" + Colones+ "','" + Range +"')";
-        String insertToRegister = insertFields + insertValues;
-
-        try{
-            Statement statement =connectDB.createStatement();
-            statement.executeLargeUpdate(insertToRegister);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            e.getCause();
-        }
-    }*/
 
 }

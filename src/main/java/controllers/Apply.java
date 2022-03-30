@@ -17,6 +17,9 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 
@@ -116,9 +119,9 @@ public class Apply implements Initializable {
     @FXML
     private TableColumn<Livre, Integer> rangee;
 
-    ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
 
     public void initialize(URL url, ResourceBundle rb) {
+        startTableViewBDD();
         // Initialiser les colonnes
         titre.setCellValueFactory(new PropertyValueFactory<Livre, String>("titre"));
         auteur.setCellValueFactory(new PropertyValueFactory<Livre, String>("auteur"));
@@ -126,10 +129,42 @@ public class Apply implements Initializable {
         parution.setCellValueFactory(new PropertyValueFactory<Livre, String>("parution"));
         colonne.setCellValueFactory(new PropertyValueFactory<Livre, Integer>("colonne"));
         rangee.setCellValueFactory(new PropertyValueFactory<Livre, Integer>("rangee"));
-
+        ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);
 
         // Clear person details.
         //showLivreDetails(null);
+    }
+    private void startTableViewBDD(){
+        databaseConnection connectNow = new databaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String selectFields ="SELECT titre, auteur, presentation, parution, colonne, rangee FROM livre ";
+        String selectToRegister = selectFields;
+        try{//récupérer les valeurs de la BDD
+            PreparedStatement statement =connectDB.prepareStatement(selectToRegister);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            while(result.next()){
+                String titre = result.getString("titre");
+                String auteur = result.getString("auteur");
+                String presentation = result.getString("presentation");
+                int parution = result.getInt("parution");
+                int colonne = result.getInt("colonne");
+                int rangee = result.getInt("rangee");
+                Livre livre =  new Livre(titre,auteur,presentation,parution, colonne, rangee);
+                bibliotheque.addLivre(livre);
+            }
+
+        }catch (Exception e){ //récupérer les valeurs du XML
+            try {
+                File file = new File("Bibliotheque.xml");
+                JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
+                Unmarshaller mapperXMLObjet = context.createUnmarshaller();
+                bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(file);
+            } catch(JAXBException d){
+                d.printStackTrace();
+            }
+        }
     }
 }

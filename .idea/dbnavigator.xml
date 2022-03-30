@@ -33,14 +33,14 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
-      <object connection-id="5ae3d898-82f9-4ba6-8868-7f4eeec8bf1b" object-ref="consoles/MySQL Connection" />
+      <object connection-id="5ae3d898-82f9-4ba6-8868-7f4eeec8bf1b" object-ref="schemas/biblio/tables/livre" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="5ae3d898-82f9-4ba6-8868-7f4eeec8bf1b" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="5ae3d898-82f9-4ba6-8868-7f4eeec8bf1b" dataset="biblio.livre" active-filter-id="" />
+    <filter-actions connection-id="5ae3d898-82f9-4ba6-8868-7f4eeec8bf1b" dataset="biblio.livre" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
