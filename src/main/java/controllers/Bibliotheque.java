@@ -58,8 +58,8 @@ public class Bibliotheque {
         livres.add(newLivre);
     }
 
-    public void supprLivre(Livre newLivre) {
-        livres.remove(newLivre);
+    public void supprLivre(Livre currentLivre) {
+        livres.remove(currentLivre);
     }
 
     public void clear() {

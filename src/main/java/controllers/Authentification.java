@@ -19,11 +19,26 @@ public class Authentification {
     //ce login en tant que différent user
     @FXML
     void validaton(ActionEvent event) throws IOException {
+        JFrame jFrame = new JFrame();
         String username = usernameField.getText();
         String password = passwordField.getText();
         //obligation d'utiliser contains than username == "pcot"
-        if(username.contains("pcot") || username.contains("jkla")  || username.contains("cgob")){//accès simple
-            JFrame jFrame = new JFrame();
+        if(username.contains("pcottin")  || username.contains("jklatt") || username.contains("cgobert")) {//accès admin
+            if(password.contains("1234")){
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Admin.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(jFrame, "Mot de passe incorrect");
+            }
+        } else if(username.contains("pcot")  || username.contains("jkla") || username.contains("cgob")) {//accès simple
             if(password.contains("1234")){
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/apply.fxml"));
@@ -38,10 +53,7 @@ public class Authentification {
             } else {
                 JOptionPane.showMessageDialog(jFrame, "Mot de passe incorrect");
             }
-        } else if(username.contains("pcotin")  || username.contains("jklatt") || username.contains("cgobert")) {//accès admin
-
         } else {
-            JFrame jFrame = new JFrame();
             JOptionPane.showMessageDialog(jFrame, "Nom d'utilisateur incorrect");
         }
     }

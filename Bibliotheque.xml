@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibliotheque>
     <livres>
-        <titre>Le Seigneur des anneaux</titre>
-        <auteur>Tolkien</auteur>
-        <presentation>zeg</presentation>
+        <titre>test</titre>
+        <auteur>test2</auteur>
+        <presentation>nivznecnzi</presentation>
         <parution>2000</parution>
-        <colonne>1</colonne>
-        <rangee>1</rangee>
-    </livres>
-    <livres>
-        <titre>Le Silence des agneaux</titre>
-        <auteur>Hannibal</auteur>
-        <presentation>reth</presentation>
-        <parution>1980</parution>
         <colonne>1</colonne>
         <rangee>2</rangee>
     </livres>
     <livres>
-        <titre>Retour vers le futur</titre>
-        <auteur>Marty</auteur>
-        <presentation>poj</presentation>
+        <titre>test</titre>
+        <auteur>test2</auteur>
+        <presentation>nivznecnzi</presentation>
         <parution>2000</parution>
         <colonne>1</colonne>
-        <rangee>3</rangee>
+        <rangee>2</rangee>
     </livres>
 </bibliotheque>
