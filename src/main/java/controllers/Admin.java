@@ -17,6 +17,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 
@@ -197,7 +199,21 @@ public class Admin implements Initializable {
                 //déclarer en erreur sur jetBrain mais fonctionne
                 bibliotheque.addLivre(monLivre);
                 TableView.getItems().add(monLivre);
+                databaseConnection connectNow = new databaseConnection();
+                Connection connectDB = connectNow.getConnection();
 
+                String insertFields ="INSERT INTO Livre (titre, auteur, presentation, parution, colonne, rangee) VALUES ('";
+                String insertValues = monLivre.titre +"','"+ monLivre.auteur +"','"+ monLivre.presentation + "'," + monLivre.parution+ "," + monLivre.colonne +","+ monLivre.rangee + ")";
+                String insertToRegister = insertFields + insertValues;
+
+                try{
+                    Statement statement =connectDB.createStatement();
+                    statement.executeLargeUpdate(insertToRegister);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    e.getCause();
+                }
             }
         });
 
@@ -263,5 +279,23 @@ public class Admin implements Initializable {
             RangeeField.setText(String.valueOf(rangee));
         }
     }
+/*
+    public void test(){
+        databaseConnection connectNow = new databaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String insertFields ="INSERT INTO livre_aicha (Titre, Auteur, Presentation, Parution, Colones, Rangees) VALUES ('";
+        String insertValues = Titre +"','"+ Auteur +"','"+ Presentation + "','" + Parution + "','" + Colones+ "','" + Range +"')";
+        String insertToRegister = insertFields + insertValues;
+
+        try{
+            Statement statement =connectDB.createStatement();
+            statement.executeLargeUpdate(insertToRegister);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+        }
+    }*/
 
 }

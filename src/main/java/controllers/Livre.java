@@ -1,13 +1,10 @@
 package main.java.controllers;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "titre", "auteur", "presentation", "parution", "colonne", "rangee" })
+@XmlRootElement(name = "Livre")
 
 public class Livre {
 
@@ -31,6 +28,10 @@ public class Livre {
         this.parution = parution;
         this.colonne = colonne;
         this.rangee = rangee;
+    }
+
+    public Livre(){
+
     }
 
     // Getter
