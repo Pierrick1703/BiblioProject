@@ -123,7 +123,6 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <TextField fx:id="RangeeField" text="INT -&gt; 0,7" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Titre : " wrappingWidth="38.13671875" GridPane.halignment="RIGHT" />
                                         <TextField fx:id="TitreField" text="Alpha Numérique" GridPane.columnIndex="1" />
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Auteur : " wrappingWidth="50.13671875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
@@ -135,6 +134,7 @@
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Colonne : " wrappingWidth="57.13671875" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                                         <TextField fx:id="ColonneField" text="INT -&gt; 0,5" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rangée : " wrappingWidth="54.13671875" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                                        <TextField fx:id="RangeeField" text="INT -&gt; 0,7" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                         <Button fx:id="btnValider" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Valider" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
                                     </children>
                                 </GridPane>

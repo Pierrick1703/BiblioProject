@@ -270,13 +270,16 @@ public class Admin implements Initializable {
                 Livre livre =  new Livre(titre,auteur,presentation,parution, colonne, rangee);
                 bibliotheque.addLivre(livre);
             }
-
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "Connection à la base de donnée");
         }catch (Exception e){
             try {
                 File file = new File("Bibliotheque.xml");
                 JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
                 Unmarshaller mapperXMLObjet = context.createUnmarshaller();
                 bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(file);
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "Utilisation du XML");
             } catch(JAXBException d){
                 d.printStackTrace();
             }
