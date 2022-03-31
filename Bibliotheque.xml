@@ -7,13 +7,17 @@
         <parution>2000</parution>
         <colonne>1</colonne>
         <rangee>2</rangee>
+        <etat>prété</etat>
+        <resumer>Un auteur bien inspiré</resumer>
     </livres>
     <livres>
-        <titre>test</titre>
-        <auteur>test2</auteur>
-        <presentation>nivznecnzi</presentation>
-        <parution>2000</parution>
+        <titre>tesgz e</titre>
+        <auteur>c eznnciez</auteur>
+        <presentation>daezd z</presentation>
+        <parution>2021</parution>
         <colonne>1</colonne>
         <rangee>2</rangee>
+        <etat>prété</etat>
+        <resumer>dza e azd za daz daz</resumer>
     </livres>
 </bibliotheque>

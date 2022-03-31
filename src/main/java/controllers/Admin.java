@@ -31,6 +31,8 @@ public class Admin implements Initializable {
     @FXML private TextField ParutionField;
     @FXML private TextField ColonneField;
     @FXML private TextField RangeeField;
+    @FXML private TextField resumeeField;
+    @FXML private ComboBox etatField = new ComboBox();;
     @FXML private Button btnSuppr;
     @FXML private MenuItem MenuAboutInfos;
     @FXML private MenuItem MenuEditionSauvegarder;
@@ -44,8 +46,8 @@ public class Admin implements Initializable {
     @FXML  private TableColumn<Livre, String> auteur;
     @FXML  private TableColumn<Livre, String> presentation;
     @FXML  private TableColumn<Livre, String> parution;
-    @FXML  private TableColumn<Livre, Integer> colonne;
-    @FXML  private TableColumn<Livre, Integer> rangee;
+    @FXML  private TableColumn<Livre, Short> colonne;
+    @FXML  private TableColumn<Livre, Short> rangee;
     // Bouton Valider
     @FXML private Button btnValider;
     private boolean okClicked = false;
@@ -213,8 +215,8 @@ public class Admin implements Initializable {
         auteur.setCellValueFactory(new PropertyValueFactory<Livre,String>("auteur"));
         presentation.setCellValueFactory(new PropertyValueFactory<Livre,String>("presentation"));
         parution.setCellValueFactory(new PropertyValueFactory<Livre,String>("parution"));
-        colonne.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("colonne"));
-        rangee.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("rangee"));
+        colonne.setCellValueFactory(new PropertyValueFactory<Livre,Short>("colonne"));
+        rangee.setCellValueFactory(new PropertyValueFactory<Livre,Short>("rangee"));
 
         ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);
@@ -226,8 +228,13 @@ public class Admin implements Initializable {
 
         btnValider.setOnMouseClicked(btnAction -> {
             if (isInputValid()){
-                Livre monLivre = new Livre(TitreField.getText(), AuteurField.getText(), PresentationField.getText(), Integer.parseInt(ParutionField.getText()), Integer.parseInt(ColonneField.getText()), Integer.parseInt(RangeeField.getText()));
-                //déclarer en erreur sur jetBrain mais fonctionne
+                String etat;
+                if(etatField.getSelectionModel().getSelectedIndex() == 0){
+                    etat = "prété";
+                } else {
+                    etat = "disponible";
+                }
+                Livre monLivre = new Livre(TitreField.getText(), AuteurField.getText(), PresentationField.getText(), Integer.parseInt(ParutionField.getText()), Short.parseShort(ColonneField.getText()), Short.parseShort(RangeeField.getText()), etat, resumeeField.getText());
                 bibliotheque.addLivre(monLivre);
                 TableView.getItems().add(monLivre);
                 databaseConnection connectNow = new databaseConnection();
@@ -265,9 +272,11 @@ public class Admin implements Initializable {
                 String auteur = result.getString("auteur");
                 String presentation = result.getString("presentation");
                 int parution = result.getInt("parution");
-                int colonne = result.getInt("colonne");
-                int rangee = result.getInt("rangee");
-                Livre livre =  new Livre(titre,auteur,presentation,parution, colonne, rangee);
+                short colonne = result.getShort("colonne");
+                short rangee = result.getShort("rangee");
+                String etat = result.getString("etat");
+                String resumer = result.getString("resumer");
+                Livre livre =  new Livre(titre,auteur,presentation,parution, colonne, rangee, etat, resumer);
                 bibliotheque.addLivre(livre);
             }
             JFrame jFrame = new JFrame();

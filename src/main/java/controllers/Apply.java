@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -35,6 +36,8 @@ public class Apply implements Initializable {
     @FXML private TextField ParutionField;
     @FXML private TextField ColonneField;
     @FXML private TextField RangeeField;
+    @FXML private TextField resumeeField;
+    @FXML private ComboBox etatField = new ComboBox();;
     @FXML private Button btnSuppr;
     @FXML private MenuItem MenuAboutInfos;
     @FXML private MenuItem MenuEditionSauvegarder;
@@ -47,9 +50,11 @@ public class Apply implements Initializable {
     @FXML  private TableColumn<Livre, String> titre;
     @FXML  private TableColumn<Livre, String> auteur;
     @FXML  private TableColumn<Livre, String> presentation;
-    @FXML  private TableColumn<Livre, String> parution;
-    @FXML  private TableColumn<Livre, Integer> colonne;
-    @FXML  private TableColumn<Livre, Integer> rangee;
+    @FXML  private TableColumn<Livre, Integer> parution;
+    @FXML  private TableColumn<Livre, Short> colonne;
+    @FXML  private TableColumn<Livre, Short> rangee;
+    @FXML private TableColumn<Livre, String> etat;
+    @FXML private TableColumn<Livre, String> resumer;
     // Bouton Valider
     @FXML private Button btnValider;
     private boolean okClicked = false;
@@ -199,25 +204,36 @@ public class Apply implements Initializable {
     public void initialize (URL url, ResourceBundle rb){
         startTableViewBDD();
         // Initialiser les colonnes
+        etatField.getItems().addAll(
+                "prété",
+                "disponible"
+        );
         titre.setCellValueFactory(new PropertyValueFactory<Livre,String>("titre"));
         auteur.setCellValueFactory(new PropertyValueFactory<Livre,String>("auteur"));
         presentation.setCellValueFactory(new PropertyValueFactory<Livre,String>("presentation"));
-        parution.setCellValueFactory(new PropertyValueFactory<Livre,String>("parution"));
-        colonne.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("colonne"));
-        rangee.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("rangee"));
+        parution.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("parution"));
+        colonne.setCellValueFactory(new PropertyValueFactory<Livre,Short>("colonne"));
+        rangee.setCellValueFactory(new PropertyValueFactory<Livre,Short>("rangee"));
+        etat.setCellValueFactory(new PropertyValueFactory<Livre,String>("etat"));
+        resumer.setCellValueFactory(new PropertyValueFactory<Livre,String>("resumer"));
 
         ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);
 
         // Listener
-        TableView.getSelectionModel().selectedItemProperty().addListener(
+        /*TableView.getSelectionModel().selectedItemProperty().addListener(
                 ((observable, oldValue,newValue) -> showLivreDetails(newValue))
-        );
+        );*/
 
         btnValider.setOnMouseClicked(btnAction -> {
             if (isInputValid()){
-                Livre monLivre = new Livre(TitreField.getText(), AuteurField.getText(), PresentationField.getText(), Integer.parseInt(ParutionField.getText()), Integer.parseInt(ColonneField.getText()), Integer.parseInt(RangeeField.getText()));
-                //déclarer en erreur sur jetBrain mais fonctionne
+                String etat;
+                if(etatField.getSelectionModel().getSelectedIndex() == 0){
+                    etat = "prété";
+                } else {
+                    etat = "disponible";
+                }
+                Livre monLivre = new Livre(TitreField.getText(), AuteurField.getText(), PresentationField.getText(), Integer.parseInt(ParutionField.getText()), Short.parseShort(ColonneField.getText()), Short.parseShort(RangeeField.getText()), etat, resumeeField.getText());
                 bibliotheque.addLivre(monLivre);
                 TableView.getItems().add(monLivre);
                 jaxbObjectToXML(bibliotheque);
@@ -237,7 +253,7 @@ public class Apply implements Initializable {
             }
         }
 
-
+/*
     private void showLivreDetails(Livre livre){
         if (livre != null) {
             // Fill the labels with info from the person object.
@@ -257,7 +273,7 @@ public class Apply implements Initializable {
             colonne.setText("");
             rangee.setText("");
         }
-    }
+    }*/
 
     public void switchAccount(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));

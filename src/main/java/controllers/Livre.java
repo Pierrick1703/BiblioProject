@@ -3,7 +3,7 @@ package main.java.controllers;
 import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "titre", "auteur", "presentation", "parution", "colonne", "rangee" })
+@XmlType(propOrder = { "titre", "auteur", "presentation", "parution", "colonne", "rangee", "etat","resumer" })
 @XmlRootElement(name = "Livre")
 
 public class Livre {
@@ -16,18 +16,25 @@ public class Livre {
     protected String presentation;
     @XmlSchemaType(name = "unsignedShort")
     protected int parution;
+    @XmlSchemaType(name = "unsignedShort")
+    protected short rangee;
     @XmlSchemaType(name = "unsignedByte")
-    protected int colonne;
+    protected short colonne;
     @XmlSchemaType(name = "unsignedByte")
-    protected int rangee;
+    protected String etat;
+    @XmlSchemaType(name = "unsignedByte")
+    protected String resumer;
 
-    public Livre(String titre, String auteur, String presentation, int parution, int colonne, int rangee) {
+
+    public Livre(String titre, String auteur, String presentation, int parution, short colonne, short rangee, String etat, String resumer) {
         this.titre = titre;
         this.auteur = auteur;
         this.presentation = presentation;
         this.parution = parution;
         this.colonne = colonne;
         this.rangee = rangee;
+        this.resumer = resumer;
+        this.etat = etat;
     }
 
     public Livre(){
@@ -35,11 +42,11 @@ public class Livre {
     }
 
     // Getter
-    public int getColonne() {
+    public short getColonne() {
         return colonne;
     }
 
-    public int getRangee() {
+    public short getRangee() {
         return rangee;
     }
 
@@ -59,12 +66,20 @@ public class Livre {
         return parution;
     }
 
+    public String getEtat() {
+        return etat;
+    }
+
+    public String getResumer() {
+        return resumer;
+    }
+
     // Setter
-    public void setColonne(int colonne) {
+    public void setColonne(short colonne) {
         this.colonne = colonne;
     }
 
-    public void setRangee(int rangee) {
+    public void setRangee(short rangee) {
         this.rangee = rangee;
     }
 
@@ -82,5 +97,13 @@ public class Livre {
 
     public void setParution(int parution) {
         this.parution = parution;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
+
+    public void setResumer(String resumer) {
+        this.resumer = resumer;
     }
 }
