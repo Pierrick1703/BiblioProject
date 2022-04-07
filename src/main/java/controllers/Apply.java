@@ -9,8 +9,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
+import org.w3c.dom.ranges.Range;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,6 +22,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterGraphics;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 
 public class Apply implements Initializable {
@@ -45,6 +53,8 @@ public class Apply implements Initializable {
     @FXML private MenuItem MenuFichierOuvrir;
     @FXML private javafx.scene.control.MenuItem closeButton;
     @FXML private Button btnEdit;
+    @FXML private ImageView imageViewParution;
+    @FXML private Button buttonVerificationParution;
     ////////////// tableau ///////////////////
     @FXML  private TableView<Livre> TableView;
     @FXML  private TableColumn<Livre, String> titre;
@@ -66,29 +76,51 @@ public class Apply implements Initializable {
         String errorMessage = "";
 
         if (TitreField.getText() == null || TitreField.getText().length() == 0) {
-            errorMessage += "No valid titre!\n";
+            errorMessage += "Champ titre vide!\n";
         }
         if (AuteurField.getText() == null || AuteurField.getText().length() == 0) {
-            errorMessage += "No valid auteur!\n";
+            errorMessage += "Champ auteur vide!\n";
         }
         if (PresentationField.getText() == null || PresentationField.getText().length() == 0) {
-            errorMessage += "No valid presentation!\n";
+            errorMessage += "Champ presentation vide!\n";
         }
         if (ParutionField.getText() == null || ParutionField.getText().length() == 0) {
-            errorMessage += "No valid parution!\n";
+            errorMessage += "Champ parution vide!\n";
         }
         if (ColonneField.getText() == null || ColonneField.getText().length() == 0) {
-            errorMessage += "No valid colonne!\n";
+            errorMessage += "Champ colonne vide!\n";
         }
+        if (RangeeField.getText() == null || RangeeField.getText().length() == 0) {
+            errorMessage += "Champ rangée vide!\n";
+        }
+        if (resumeeField.getText() == null || resumeeField.getText().length() == 0){
+            errorMessage += "Champ résumé vide!\n";
+        }
+        Scanner scannerParution = new Scanner(ParutionField.getText());
         try {
-            Integer.parseInt(ColonneField.getText());
+            Integer.parseInt(scannerParution.next());
         }
         catch (Exception e){
-            errorMessage += "No valid colonne!\n";
+            errorMessage += "invalide parution!\n";
         }
-
-        if (RangeeField.getText() == null || RangeeField.getText().length() == 0) {
-            errorMessage += "No valid rangee!\n";
+        Scanner scannerColonne = new Scanner(ColonneField.getText());
+        try {
+            Integer.parseInt(scannerColonne.next());
+        }
+        catch (Exception e){
+            errorMessage += "invalide colonne!\n";
+        }
+        Scanner scannerRangee = new Scanner(RangeeField.getText());
+        try {
+            Integer.parseInt(scannerRangee.next());
+        }
+        catch (Exception e){
+            errorMessage += "invalide rangée!\n";
+        }
+        if(etatField.getSelectionModel().getSelectedIndex() == 0 || etatField.getSelectionModel().getSelectedIndex() != 1){
+        } else if (etatField.getSelectionModel().getSelectedIndex() != 0 || etatField.getSelectionModel().getSelectedIndex() == 1){
+        } else {
+            errorMessage += "invalide état!\n";
         }
         if (errorMessage.length() == 0) {
             return true;
@@ -164,8 +196,19 @@ public class Apply implements Initializable {
     }
 
     @FXML
+    void connexion(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+        stage.setScene(scene);
+        stage.show();
+        //((Stage)(((Menu)event.getSource()).getScene().getWindow())).close();
+    }
+
+    @FXML
     void handleModifLivre(ActionEvent event) {
-        //déclarer en erreur sur jetBrain mais fonctionne
         Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
         int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
         if (selectedLivre != null) {
@@ -174,11 +217,49 @@ public class Apply implements Initializable {
             TitreField.setText(selectedLivre.titre);
             AuteurField.setText(selectedLivre.auteur);
             PresentationField.setText(selectedLivre.presentation);
-            ParutionField.setText(String.valueOf(selectedLivre.parution));
-            int colonne = selectedLivre.colonne;
+            int parution = selectedLivre.parution;
+            ParutionField.setText(String.valueOf(parution));
+            short colonne = selectedLivre.colonne;
             ColonneField.setText(String.valueOf(colonne));
-            int rangee = selectedLivre.rangee;
+            short rangee = selectedLivre.rangee;
             RangeeField.setText(String.valueOf(rangee));
+            if(selectedLivre.etat == "prété"){
+                etatField.getSelectionModel().select(0);
+            } else {
+                etatField.getSelectionModel().select(1);
+            }
+            resumeeField.setText(selectedLivre.resumer);
+        }
+    }
+    @FXML
+    void verificationParution(ActionEvent event){
+        Stage primaryStage = new Stage();
+        String imageURL = PresentationField.getText();
+        Image image = new Image(imageURL);
+        ImageView imageViewParution = new ImageView(image);
+        Pane root = new Pane();
+        root.getChildren().setAll(imageViewParution);
+        final Scene scene = new Scene(root, 350, 300);
+        primaryStage.setTitle("Test d'affichage d'image");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @FXML
+    void extractPDF(ActionEvent event){
+        DataTablePrinter tablePrinter = new DataTablePrinter(DataTablePrinter.initData (), null, true);
+
+        PrinterGraphics PDFPrinterJob = null;
+        PrinterJob printerJob = PDFPrinterJob.getPrinterJob();
+        printerJob.setPrintable(tablePrinter);
+
+        try
+        {
+            printerJob.print();
+        }
+        catch (PrinterException pe)
+        {
+            pe.printStackTrace();
         }
     }
 
@@ -214,8 +295,8 @@ public class Apply implements Initializable {
         parution.setCellValueFactory(new PropertyValueFactory<Livre,Integer>("parution"));
         colonne.setCellValueFactory(new PropertyValueFactory<Livre,Short>("colonne"));
         rangee.setCellValueFactory(new PropertyValueFactory<Livre,Short>("rangee"));
-        etat.setCellValueFactory(new PropertyValueFactory<Livre,String>("etat"));
         resumer.setCellValueFactory(new PropertyValueFactory<Livre,String>("resumer"));
+        etat.setCellValueFactory(new PropertyValueFactory<Livre,String>("etat"));
 
         ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);

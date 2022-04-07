@@ -20,4 +20,14 @@
         <etat>prété</etat>
         <resumer>dza e azd za daz daz</resumer>
     </livres>
+    <livres>
+        <titre>Titre de test</titre>
+        <auteur>test de l'auteur</auteur>
+        <presentation>https://www.wikihow.com/images_en/thumb/c/c7/Draw-a-Book-Step-6-preview.jpg/550px-nowatermark-Draw-a-Book-Step-6-preview.jpg</presentation>
+        <parution>2022</parution>
+        <colonne>2</colonne>
+        <rangee>3</rangee>
+        <etat>disponible</etat>
+        <resumer>Ceci est un test de résumé</resumer>
+    </livres>
 </bibliotheque>

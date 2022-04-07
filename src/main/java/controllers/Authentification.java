@@ -68,7 +68,24 @@ public class Authentification {
 
     //arrêter le programme
     @FXML
-    void fermeture(ActionEvent event) {
+    void fermeture(ActionEvent event) throws IOException {
         ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+        /*Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/apply.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+        stage.setScene(scene);
+        stage.show();*/
+    }
+
+    @FXML
+    void closeButtonAction(ActionEvent event) throws IOException {
+        ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+        /*Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/apply.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+        stage.setScene(scene);
+        stage.show();*/
     }
 }
