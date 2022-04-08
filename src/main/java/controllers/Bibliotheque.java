@@ -22,42 +22,29 @@ public class Bibliotheque {
 
     }
 
-    /**
-     * Gets the value of the livre property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the
-     * livre property.
-     *
-     * <p>
-     * To add a new item, do as follows:
-     *
-     * <pre>
-     * getLivre().add(newItem);
-     * </pre>
-     *
-     * @return this.livres
+    /*
+    Renvoie un objet livre existant dans la liste
      */
     public List<Livre> getLivreList() {
         return this.livres;
     }
 
+    /*
+    Ajout un objet livre dans la liste
+    en Paramètre un objet Livre
+     */
     public void addLivre(Livre newLivre) {
         livres.add(newLivre);
     }
 
-    /**
-     * Doit-on pas plutot changer les proprietes du livre ?
-     *
-     * @param lastLivre
-     * @param newLivre
-     */
     public void updateLivre(Livre lastLivre, Livre newLivre) {
         livres.remove(lastLivre);
         livres.add(newLivre);
     }
 
+    /*
+    Supprime le livre en paramètre de la liste
+     */
     public void supprLivre(Livre currentLivre) {
         livres.remove(currentLivre);
     }

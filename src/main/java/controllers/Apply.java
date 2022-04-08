@@ -8,12 +8,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
+import org.apache.poi.xwpf.usermodel.*;
 import org.w3c.dom.ranges.Range;
 
 import javax.swing.*;
@@ -22,10 +26,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.awt.*;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterGraphics;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -75,6 +81,7 @@ public class Apply implements Initializable {
     private boolean isInputValid() {
         String errorMessage = "";
 
+        //Tri sur tout les messages d'erreur possible sur les champs si ils ne sont pas remplis convenablement
         if (TitreField.getText() == null || TitreField.getText().length() == 0) {
             errorMessage += "Champ titre vide!\n";
         }
@@ -105,20 +112,30 @@ public class Apply implements Initializable {
         }
         Scanner scannerColonne = new Scanner(ColonneField.getText());
         try {
-            Integer.parseInt(scannerColonne.next());
+            Short.parseShort(scannerColonne.next());
         }
         catch (Exception e){
             errorMessage += "invalide colonne!\n";
         }
         Scanner scannerRangee = new Scanner(RangeeField.getText());
         try {
-            Integer.parseInt(scannerRangee.next());
+            Short.parseShort(scannerRangee.next());
         }
         catch (Exception e){
             errorMessage += "invalide rangée!\n";
         }
+        ArrayList<Livre> lesLivresVerification = (ArrayList<Livre>) bibliotheque.getLivreList();
+        for(Livre livre:lesLivresVerification){
+            if(livre.colonne == Short.parseShort(ColonneField.getText())){
+                if(livre.rangee == Short.parseShort(RangeeField.getText())){
+                    errorMessage += "invalide chaque livre à une unique place!\n";
+                }
+            }
+        }
         if(etatField.getSelectionModel().getSelectedIndex() == 0 || etatField.getSelectionModel().getSelectedIndex() != 1){
+
         } else if (etatField.getSelectionModel().getSelectedIndex() != 0 || etatField.getSelectionModel().getSelectedIndex() == 1){
+
         } else {
             errorMessage += "invalide état!\n";
         }
@@ -135,57 +152,68 @@ public class Apply implements Initializable {
         return false;
     }
 
-    @FXML
-    void aboutinfos(ActionEvent event) throws IOException {
+    @FXML void aboutinfos(ActionEvent event) throws IOException {
     }
 
-    @FXML
-    void closeButtonAction() {
+    /*
+    Evenement qui arrête l'application
+     */
+    @FXML void closeButtonAction() {
         System.exit(0);
     }
 
-    @FXML
-    void editionsauvegarder(ActionEvent event) {
+    @FXML void editionsauvegarder(ActionEvent event) {
     }
 
-    @FXML
-    void editionsauvegardersous(ActionEvent event) {
+    /*
+    Evenement qui force l'édition du XML
+     */
+    @FXML void editionsauvegardersous(ActionEvent event) {
         jaxbObjectToXML(bibliotheque);
     }
-
-    @FXML
-    void fichierouvrir(ActionEvent event) {
+    /*
+    Evenement quand on clique sur l'onglet fichier > ouvrir, il permet de rechercher un XML potentiel différent pour le charger
+     */
+    @FXML void fichierouvrir(ActionEvent event) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter("xml files (*.xml)", "xml");
         chooser.setDialogTitle("Open schedule file");
         chooser.setFileFilter(xmlfilter);
         int value = chooser.showOpenDialog(null);
+
         if(value == JFileChooser.APPROVE_OPTION) {
             File target = chooser.getSelectedFile();
+
             try {
                 JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
                 Unmarshaller mapperXMLObjet = context.createUnmarshaller();
                 bibliotheque = (Bibliotheque) mapperXMLObjet.unmarshal(target);
                 ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
                 TableView.setItems(list);
+
             } catch (JAXBException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Fields");
+                alert.setHeaderText("Please correct invalid fields");
+                alert.setContentText("Format du fichier non valide");
+
+                alert.showAndWait();
             }
         }
     }
 
     // Bouton Suppression
-    @FXML
-    void handleDeleteLivre(ActionEvent event) {
+    @FXML void handleDeleteLivre(ActionEvent event) {
         int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
         Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
+
         if (selectedIndex >= 0) {
-            //déclarer en erreur sur jetBrain mais fonctionne
+            //Retire de l'élément tableView, de la classe bibliothèque et édite le XML avec la modification faite
             TableView.getItems().remove(selectedIndex);
             bibliotheque.supprLivre(selectedLivre);
             jaxbObjectToXML(bibliotheque);
         } else {
-            // Nothing selected
+            // Nothing selected - alerte
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Aucune sélection");
             alert.setHeaderText("Aucun livre sélectionné");
@@ -194,35 +222,45 @@ public class Apply implements Initializable {
             alert.showAndWait();
         }
     }
-
-    @FXML
-    void connexion(ActionEvent event) throws IOException {
+    /*
+    Fonction qui lance une nouvelle fenêtre pour s'authentifier et passer à la version sur BDD
+     */
+    @FXML void connexion(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
+        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT - Authentification");
         stage.setScene(scene);
         stage.show();
-        //((Stage)(((Menu)event.getSource()).getScene().getWindow())).close();
     }
 
-    @FXML
-    void handleModifLivre(ActionEvent event) {
+    /*
+    Evenement déclenché au moment du clic sur le bouton modifier :
+     - vérificaion qu'une ligne est été sélectionnée
+     - suppression du livre dans la list bibliotheque et de la listView
+     - Remplissage des informations du livre supprimer dans les champs de la fiche livre
+    */
+    @FXML void handleModifLivre(ActionEvent event) {
         Livre selectedLivre = TableView.getSelectionModel().getSelectedItem();
         int selectedIndex = TableView.getSelectionModel().getSelectedIndex();
+
         if (selectedLivre != null) {
             bibliotheque.supprLivre(selectedLivre);
             TableView.getItems().remove(selectedIndex);
             TitreField.setText(selectedLivre.titre);
             AuteurField.setText(selectedLivre.auteur);
             PresentationField.setText(selectedLivre.presentation);
+
             int parution = selectedLivre.parution;
             ParutionField.setText(String.valueOf(parution));
+
             short colonne = selectedLivre.colonne;
             ColonneField.setText(String.valueOf(colonne));
+
             short rangee = selectedLivre.rangee;
             RangeeField.setText(String.valueOf(rangee));
+
             if(selectedLivre.etat == "prété"){
                 etatField.getSelectionModel().select(0);
             } else {
@@ -231,38 +269,97 @@ public class Apply implements Initializable {
             resumeeField.setText(selectedLivre.resumer);
         }
     }
-    @FXML
-    void verificationParution(ActionEvent event){
+    /*
+    Evenement déclenché au moment du clic sur le bouton vérification :
+        - Récupération de l'URL saisi dans le champ presentation
+        - Affichage dans une autre fenêtre de l'image pour visualiser
+     */
+    @FXML void verificationParution(ActionEvent event){
         Stage primaryStage = new Stage();
         String imageURL = PresentationField.getText();
         Image image = new Image(imageURL);
         ImageView imageViewParution = new ImageView(image);
         Pane root = new Pane();
         root.getChildren().setAll(imageViewParution);
-        final Scene scene = new Scene(root, 350, 300);
-        primaryStage.setTitle("Test d'affichage d'image");
+        Scene scene = new Scene(root, 350, 300);
+        primaryStage.setTitle("Visualisation d'image");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    @FXML
-    void extractPDF(ActionEvent event){
-        DataTablePrinter tablePrinter = new DataTablePrinter(DataTablePrinter.initData (), null, true);
+    /*
+    Evenement déclenché au moment du clic sur le menu de l'onglet fichier :
+        - ressort un fichier word/pdf des données
+     */
+    @FXML void extractWord(ActionEvent event) throws IOException {
+        ArrayList<Livre> lesLivres = (ArrayList<Livre>) bibliotheque.getLivreList();
+        File wordfile = new File("bibliothequeWord.docx");
+        try (XWPFDocument doc = new  XWPFDocument()) {
 
-        PrinterGraphics PDFPrinterJob = null;
-        PrinterJob printerJob = PDFPrinterJob.getPrinterJob();
-        printerJob.setPrintable(tablePrinter);
+            // create a paragraph
+            XWPFParagraph p1 = doc.createParagraph();
+            XWPFParagraph documentControlHeading = doc.createParagraph();
 
-        try
-        {
-            printerJob.print();
+            documentControlHeading.setAlignment(ParagraphAlignment.LEFT);
+            documentControlHeading.setPageBreak(true);
+
+
+
+            doc.createTOC();
+            p1.setAlignment(ParagraphAlignment.CENTER);
+
+            // set font
+            XWPFRun r1 = p1.createRun();
+            r1.setBold(true);
+            r1.setItalic(true);
+            r1.setFontSize(22);
+            r1.setFontFamily("New Roman");
+            r1.setText("Bibliothèque du groupe JCP.");
+            XWPFTable table = doc.createTable();
+
+
+            //Creating first Row
+            XWPFTableRow row01 = table.getRow(0);
+            row01.getCell(0).setText("Nom livre");
+            row01.addNewTableCell().setText("Nom et prénom de l'auteur");
+            row01.addNewTableCell().setText("Presentation");
+            row01.addNewTableCell().setText("Parution");
+            row01.addNewTableCell().setText("Colonne");
+            row01.addNewTableCell().setText("Rangee");
+            row01.addNewTableCell().setText("Etat");
+
+
+            for(Livre livre:lesLivres)
+            {
+                XWPFTableRow row0 = table.createRow();
+                row0.getCell(0).setText(livre.titre);
+                row0.getCell(1).setText(livre.auteur);
+                row0.getCell(2).setText(livre.presentation);
+                String parution= String.valueOf(livre.parution);
+                row0.getCell(3).setText(parution);
+                String colonne= String.valueOf(livre.colonne);
+                row0.getCell(4).setText(colonne);
+                String rangee= String.valueOf(livre.rangee);
+                row0.getCell(5).setText(rangee);
+                String etat= String.valueOf(livre.etat);
+                row0.getCell(6).setText(etat);
+            }
+
+            try (FileOutputStream out = new FileOutputStream(wordfile)) {
+                doc.write(out);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (PrinterException pe)
-        {
-            pe.printStackTrace();
-        }
+
+        File wordfileFinal = new File("bibliothequeWord.docx");
+        Desktop dsk = Desktop.getDesktop();
+        dsk.open(wordfileFinal);
     }
 
+    /*
+    Fonction lier a JAXB permettant d'éditer un fichier XML avec la classe Bibliothèque
+     */
     private static void jaxbObjectToXML(Bibliotheque bibliotheque){
         try
         {
@@ -282,13 +379,19 @@ public class Apply implements Initializable {
             e.printStackTrace();
         }
     }
+    /*
+    Fonction invoquer au début du lancement de la classe qui récupère
+    les informations du XML présent dans le projet.
+    initialise les éléments visuels et ajout les données dans les classes Bibliothèque et Livre
+    */
     public void initialize (URL url, ResourceBundle rb){
-        startTableViewBDD();
+        startTableViewXML();
         // Initialiser les colonnes
         etatField.getItems().addAll(
                 "prété",
                 "disponible"
         );
+        //prépare les colonnes du listView
         titre.setCellValueFactory(new PropertyValueFactory<Livre,String>("titre"));
         auteur.setCellValueFactory(new PropertyValueFactory<Livre,String>("auteur"));
         presentation.setCellValueFactory(new PropertyValueFactory<Livre,String>("presentation"));
@@ -301,11 +404,7 @@ public class Apply implements Initializable {
         ObservableList<Livre> list = FXCollections.observableArrayList(bibliotheque.getLivreList());
         TableView.setItems(list);
 
-        // Listener
-        /*TableView.getSelectionModel().selectedItemProperty().addListener(
-                ((observable, oldValue,newValue) -> showLivreDetails(newValue))
-        );*/
-
+        //partie de la fonction qui ce déclenche au moment de cliquer sur le bouton Ajouter
         btnValider.setOnMouseClicked(btnAction -> {
             if (isInputValid()){
                 String etat;
@@ -323,7 +422,11 @@ public class Apply implements Initializable {
 
     }
 
-    private void startTableViewBDD(){
+    /*
+    Fonction qui va récupérer le fichier XML pour le charger en tant qu'un objet
+    bibliothèque (déjà initialiser au début de la classe)
+     */
+    private void startTableViewXML(){
             try {
                 File file = new File("Bibliotheque.xml");
                 JAXBContext context = JAXBContext.newInstance(Bibliotheque.class);
@@ -333,36 +436,4 @@ public class Apply implements Initializable {
                 d.printStackTrace();
             }
         }
-
-/*
-    private void showLivreDetails(Livre livre){
-        if (livre != null) {
-            // Fill the labels with info from the person object.
-            titre.setText(livre.getTitre());
-            auteur.setText(livre.getAuteur());
-            presentation.setText(livre.getPresentation());
-            parution.setText(String.valueOf(livre.getParution()));
-            colonne.setText(String.valueOf(livre.getColonne()));
-            rangee.setText(String.valueOf(livre.getRangee()));
-        }
-        else {
-            // Livre is null, remove all the text.
-            titre.setText("");
-            auteur.setText("");
-            presentation.setText("");
-            parution.setText("");
-            colonne.setText("");
-            rangee.setText("");
-        }
-    }*/
-
-    public void switchAccount(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Authentification.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Bibliothèque - M1 M2I ESIEE IT");
-        stage.setScene(scene);
-        stage.show();
-    }
 }

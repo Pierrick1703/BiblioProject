@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibliotheque>
     <livres>
-        <titre>test</titre>
-        <auteur>test2</auteur>
-        <presentation>nivznecnzi</presentation>
-        <parution>2000</parution>
+        <titre>La Métamorphose</titre>
+        <auteur>Gérard RudentBrigitte Vergne-CainFranz Kafka</auteur>
+        <presentation>https://www.hachette.fr/sites/default/files/styles/echelle_232x232/public/images/livres/couv/9782253049807-001-T.jpeg?itok=NYQ2D3ij</presentation>
+        <parution>1989</parution>
         <colonne>1</colonne>
         <rangee>2</rangee>
-        <etat>prété</etat>
-        <resumer>Un auteur bien inspiré</resumer>
-    </livres>
-    <livres>
-        <titre>tesgz e</titre>
-        <auteur>c eznnciez</auteur>
-        <presentation>daezd z</presentation>
-        <parution>2021</parution>
-        <colonne>1</colonne>
-        <rangee>2</rangee>
-        <etat>prété</etat>
-        <resumer>dza e azd za daz daz</resumer>
-    </livres>
-    <livres>
-        <titre>Titre de test</titre>
-        <auteur>test de l'auteur</auteur>
-        <presentation>https://www.wikihow.com/images_en/thumb/c/c7/Draw-a-Book-Step-6-preview.jpg/550px-nowatermark-Draw-a-Book-Step-6-preview.jpg</presentation>
-        <parution>2022</parution>
-        <colonne>2</colonne>
-        <rangee>3</rangee>
         <etat>disponible</etat>
-        <resumer>Ceci est un test de résumé</resumer>
+        <resumer>Voilà une intrigue qui donne tort à ceux qui pensent que “ce n’est pas la petite bête qui va manger la grande” ! Quand l’identité vacille entre le corps et l’esprit, il faut savoir se méfier des apparences… </resumer>
+    </livres>
+    <livres>
+        <titre>Le Joueur</titre>
+        <auteur>Fedor DostoïevskiPierre SipriotC. AndronikofA. de Couriss</auteur>
+        <presentation>https://www.hachette.fr/sites/default/files/styles/echelle_232x232/public/images/livres/couv/9782253011736-001-T.jpeg?itok=WIowsfav</presentation>
+        <parution>1972</parution>
+        <colonne>1</colonne>
+        <rangee>3</rangee>
+        <etat>prété</etat>
+        <resumer>Au sein d’une famille russe presque ruinée, un jeune précepteur pris par l’ivresse du jeu voit son destin s’effondrer comme un château de cartes. Un ouvrage “bluffant” ! </resumer>
+    </livres>
+    <livres>
+        <titre>Le Jardin d'Épicure</titre>
+        <auteur>Irvin YalomAnne Damour</auteur>
+        <presentation>https://www.hachette.fr/sites/default/files/styles/echelle_232x232/public/images/livres/couv/9782253168645-001-T.jpeg?itok=bEfxV0G-</presentation>
+        <parution>2015</parution>
+        <colonne>2</colonne>
+        <rangee>1</rangee>
+        <etat>prété</etat>
+        <resumer>Pourquoi craindre la mort si, lorsqu’elle arrive, nous ne sommes plus ? L’une des plus grosses angoisses de l’humanité analysée en toute transparence.</resumer>
+    </livres>
+    <livres>
+        <titre>Shining</titre>
+        <auteur>Stephen King</auteur>
+        <presentation>https://www.hachette.fr/sites/default/files/styles/echelle_232x232/public/images/livres/couv/9782253151623-001-T.jpeg?itok=HLY1k2nU</presentation>
+        <parution>2007</parution>
+        <colonne>2</colonne>
+        <rangee>4</rangee>
+        <etat>disponible</etat>
+        <resumer>Après avoir lu ce roman d’horreur, vous ne verrez plus vos vacances à la montagne du même oeil... PS : avant de partir, laissez votre boîte à outils à la maison ! </resumer>
     </livres>
 </bibliotheque>

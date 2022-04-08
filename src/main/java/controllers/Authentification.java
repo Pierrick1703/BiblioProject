@@ -52,6 +52,7 @@ public class Authentification {
         }
         if (connecter == true) {
             try {
+                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/resources/Admin.fxml"));
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
