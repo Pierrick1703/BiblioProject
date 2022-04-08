@@ -17,8 +17,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
+import main.java.model.Bibliotheque;
+import main.java.model.Livre;
 import org.apache.poi.xwpf.usermodel.*;
-import org.w3c.dom.ranges.Range;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -27,17 +28,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.awt.*;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterGraphics;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -126,8 +120,8 @@ public class Apply implements Initializable {
         }
         ArrayList<Livre> lesLivresVerification = (ArrayList<Livre>) bibliotheque.getLivreList();
         for(Livre livre:lesLivresVerification){
-            if(livre.colonne == Short.parseShort(ColonneField.getText())){
-                if(livre.rangee == Short.parseShort(RangeeField.getText())){
+            if(livre.getColonne() == Short.parseShort(ColonneField.getText())){
+                if(livre.getRangee() == Short.parseShort(RangeeField.getText())){
                     errorMessage += "invalide chaque livre à une unique place!\n";
                 }
             }
@@ -248,25 +242,25 @@ public class Apply implements Initializable {
         if (selectedLivre != null) {
             bibliotheque.supprLivre(selectedLivre);
             TableView.getItems().remove(selectedIndex);
-            TitreField.setText(selectedLivre.titre);
-            AuteurField.setText(selectedLivre.auteur);
-            PresentationField.setText(selectedLivre.presentation);
+            TitreField.setText(selectedLivre.getTitre());
+            AuteurField.setText(selectedLivre.getAuteur());
+            PresentationField.setText(selectedLivre.getPresentation());
 
-            int parution = selectedLivre.parution;
+            int parution = selectedLivre.getParution();
             ParutionField.setText(String.valueOf(parution));
 
-            short colonne = selectedLivre.colonne;
+            short colonne = selectedLivre.getColonne();
             ColonneField.setText(String.valueOf(colonne));
 
-            short rangee = selectedLivre.rangee;
+            short rangee = selectedLivre.getRangee();
             RangeeField.setText(String.valueOf(rangee));
 
-            if(selectedLivre.etat == "prété"){
+            if(selectedLivre.getEtat() == "prété"){
                 etatField.getSelectionModel().select(0);
             } else {
                 etatField.getSelectionModel().select(1);
             }
-            resumeeField.setText(selectedLivre.resumer);
+            resumeeField.setText(selectedLivre.getResumer());
         }
     }
     /*
@@ -332,16 +326,16 @@ public class Apply implements Initializable {
             for(Livre livre:lesLivres)
             {
                 XWPFTableRow row0 = table.createRow();
-                row0.getCell(0).setText(livre.titre);
-                row0.getCell(1).setText(livre.auteur);
-                row0.getCell(2).setText(livre.presentation);
-                String parution= String.valueOf(livre.parution);
+                row0.getCell(0).setText(livre.getTitre());
+                row0.getCell(1).setText(livre.getAuteur());
+                row0.getCell(2).setText(livre.getPresentation());
+                String parution= String.valueOf(livre.getParution());
                 row0.getCell(3).setText(parution);
-                String colonne= String.valueOf(livre.colonne);
+                String colonne= String.valueOf(livre.getColonne());
                 row0.getCell(4).setText(colonne);
-                String rangee= String.valueOf(livre.rangee);
+                String rangee= String.valueOf(livre.getRangee());
                 row0.getCell(5).setText(rangee);
-                String etat= String.valueOf(livre.etat);
+                String etat= String.valueOf(livre.getEtat());
                 row0.getCell(6).setText(etat);
             }
 

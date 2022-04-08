@@ -1,4 +1,4 @@
-package main.java.controllers;
+package main.java.model;
 
 public class User {
     protected String username;

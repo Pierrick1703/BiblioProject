@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import main.java.model.User;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Authentification {
     @FXML private TextField usernameField;
@@ -44,8 +44,8 @@ public class Authentification {
             users.add(user);
         }
         for (User u : users) {
-            if (u.username.contains(username)) {
-                if (u.password.contains(passwordText)) {
+            if (u.getUsername().contains(username)) {
+                if (u.getPassword().contains(passwordText)) {
                     connecter = true;
                 }
             }

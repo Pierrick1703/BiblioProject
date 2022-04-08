@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,8 +14,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import main.java.model.Bibliotheque;
+import main.java.model.Livre;
 import org.apache.poi.xwpf.usermodel.*;
 
 import javax.swing.*;
@@ -124,8 +124,8 @@ public class Admin implements Initializable {
         }
         ArrayList<Livre> lesLivresVerification = (ArrayList<Livre>) bibliotheque.getLivreList();
         for(Livre livre:lesLivresVerification){
-            if(livre.colonne == Short.parseShort(ColonneField.getText())){
-                if(livre.rangee == Short.parseShort(RangeeField.getText())){
+            if(livre.getColonne() == Short.parseShort(ColonneField.getText())){
+                if(livre.getRangee() == Short.parseShort(RangeeField.getText())){
                     errorMessage += "invalide chaque livre à une unique place!\n";
                 }
             }
@@ -197,7 +197,7 @@ public class Admin implements Initializable {
             bibliotheque.supprLivre(selectedLivre);
 
             String insertFields ="DELETE FROM Livre WHERE ";
-            String insertValues = "colonne = " + selectedLivre.colonne +" AND rangee = "+ selectedLivre.rangee;
+            String insertValues = "colonne = " + selectedLivre.getColonne() +" AND rangee = "+ selectedLivre.getRangee();
             String insertToRegister = insertFields + insertValues;
 
             try{
@@ -246,25 +246,25 @@ Fonction qui lance une nouvelle fenêtre pour s'authentifier et passer à la ver
         if (selectedLivre != null) {
             bibliotheque.supprLivre(selectedLivre);
             TableView.getItems().remove(selectedIndex);
-            TitreField.setText(selectedLivre.titre);
-            AuteurField.setText(selectedLivre.auteur);
-            PresentationField.setText(selectedLivre.presentation);
+            TitreField.setText(selectedLivre.getTitre());
+            AuteurField.setText(selectedLivre.getAuteur());
+            PresentationField.setText(selectedLivre.getPresentation());
 
-            int parution = selectedLivre.parution;
+            int parution = selectedLivre.getParution();
             ParutionField.setText(String.valueOf(parution));
 
-            short colonne = selectedLivre.colonne;
+            short colonne = selectedLivre.getColonne();
             ColonneField.setText(String.valueOf(colonne));
 
-            short rangee = selectedLivre.rangee;
+            short rangee = selectedLivre.getRangee();
             RangeeField.setText(String.valueOf(rangee));
 
-            if(selectedLivre.etat == "prété"){
+            if(selectedLivre.getEtat() == "prété"){
                 etatField.getSelectionModel().select(0);
             } else {
                 etatField.getSelectionModel().select(1);
             }
-            resumeeField.setText(selectedLivre.resumer);
+            resumeeField.setText(selectedLivre.getResumer());
         }
     }
 
@@ -331,16 +331,16 @@ Fonction qui lance une nouvelle fenêtre pour s'authentifier et passer à la ver
             for(Livre livre:lesLivres)
             {
                 XWPFTableRow row0 = table.createRow();
-                row0.getCell(0).setText(livre.titre);
-                row0.getCell(1).setText(livre.auteur);
-                row0.getCell(2).setText(livre.presentation);
-                String parution= String.valueOf(livre.parution);
+                row0.getCell(0).setText(livre.getTitre());
+                row0.getCell(1).setText(livre.getAuteur());
+                row0.getCell(2).setText(livre.getPresentation());
+                String parution= String.valueOf(livre.getParution());
                 row0.getCell(3).setText(parution);
-                String colonne= String.valueOf(livre.colonne);
+                String colonne= String.valueOf(livre.getColonne());
                 row0.getCell(4).setText(colonne);
-                String rangee= String.valueOf(livre.rangee);
+                String rangee= String.valueOf(livre.getRangee());
                 row0.getCell(5).setText(rangee);
-                String etat= String.valueOf(livre.etat);
+                String etat= String.valueOf(livre.getEtat());
                 row0.getCell(6).setText(etat);
             }
 
@@ -417,7 +417,7 @@ Fonction qui lance une nouvelle fenêtre pour s'authentifier et passer à la ver
                 TableView.getItems().add(monLivre);
 
                 String insertFields ="INSERT INTO Livre (titre, auteur, presentation, parution, colonne, rangee, resumer, etat) VALUES ('";
-                String insertValues = monLivre.titre +"','"+ monLivre.auteur +"','"+ monLivre.presentation + "'," + monLivre.parution+ "," + monLivre.colonne +","+ monLivre.rangee + ",'"+ monLivre.resumer + "','"+ monLivre.etat + "')";
+                String insertValues = monLivre.getTitre() +"','"+ monLivre.getAuteur() +"','"+ monLivre.getPresentation() + "'," + monLivre.getParution()+ "," + monLivre.getColonne() +","+ monLivre.getRangee() + ",'"+ monLivre.getResumer() + "','"+ monLivre.getEtat() + "')";
                 String insertToRegister = insertFields + insertValues;
 
                 try{

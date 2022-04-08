@@ -1,4 +1,4 @@
-package main.java.controllers;
+package main.java.model;
 
 import javax.xml.bind.annotation.*;
 
